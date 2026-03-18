@@ -1,5 +1,4 @@
 name: Frontend SonarQube
-
 on:
   push:
     branches: [main]
