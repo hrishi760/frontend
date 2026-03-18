@@ -40,8 +40,11 @@ jobs:
          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         with:
-          projectBaseDir: frontend-react
+         projectBaseDir: frontend-react
+         args: >
+          -Dsonar.projectKey=hrishi760_frontend-react
+          -Dsonar.organization=hrishi760
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
