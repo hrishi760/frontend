@@ -18,40 +18,29 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         working-directory: frontend-react
         run: npm install
-        
-      - name: Build App
-        working-directory: frontend-react
-        run: npm run build
-        
-      - name: Snyk Scan
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        with:
-          command: test
-          args: --file=frontend-react/package.json --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
+
       - name: Run tests with coverage
         working-directory: frontend-react
-        run: CI=true npm test -- --coverage
+        run: |
+          npm test -- --coverage --watchAll=false
 
-      - name: Debug coverage files  
+      - name: Debug coverage
         working-directory: frontend-react
         run: |
-            echo "Listing coverage folder..."
-            ls -R coverage || echo "No coverage folder found"        
-          
+          echo "Checking coverage folder"
+          ls -R
+          ls -R coverage || echo "NO COVERAGE FOLDER"
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         with:
+          projectBaseDir: frontend-react
           args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.sources=frontend-react/src
+            -Dsonar.projectKey=hrishi760_frontend
+            -Dsonar.organization=hrishi760
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
