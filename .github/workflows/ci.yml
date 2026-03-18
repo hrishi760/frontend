@@ -19,30 +19,25 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
+        working-directory: frontend-react
         run: npm install
-        working-directory: frontend-react
-        
+
       - name: Run tests with coverage
-        run: CI=true npm test -- --coverage
         working-directory: frontend-react
-        continue-on-error: true
-        
+        run: CI=true npm test -- --coverage
+
       - name: Build App
         working-directory: frontend-react
         run: npm run build
-        
+
       - name: Snyk Scan
         uses: snyk/actions/node@master
-        continue-on-error: true
         with:
           command: test
           args: --file=frontend-react/package.json --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
-      - name: Run tests with coverage
-        run: npm test -- --coverage
-          
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
         with:
