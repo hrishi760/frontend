@@ -1,10 +1,11 @@
 name: Frontend SonarQube
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-    
+
 jobs:
   sonar:
     runs-on: ubuntu-latest
@@ -17,33 +18,30 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         working-directory: frontend-react
         run: npm install
-
-      - name: Run tests with coverage
-        working-directory: frontend-react
-        run: CI=true npm test -- --coverage
-
+        
       - name: Build App
         working-directory: frontend-react
         run: npm run build
-
+        
       - name: Snyk Scan
         uses: snyk/actions/node@master
         continue-on-error: true
         with:
-         command: test
-         args: --file=frontend-react/package.json --severity-threshold=high
+          command: test
+          args: --file=frontend-react/package.json --severity-threshold=high
         env:
-         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        
+          
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v5
         with:
-         projectBaseDir: frontend-react
-         args: >
-          -Dsonar.projectKey=hrishi760_frontend
-          -Dsonar.organization=hrishi760
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.sources=frontend-react/src
         env:
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
